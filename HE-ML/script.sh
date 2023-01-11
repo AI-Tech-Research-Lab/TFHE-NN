@@ -8,4 +8,4 @@ fi
 jupyter nbconvert --execute --to notebook $1
 git add .
 git commit -m "Result"
-git push origin master
+git push origin main
