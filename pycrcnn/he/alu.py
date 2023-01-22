@@ -252,10 +252,10 @@ def encrypted_mux_matrix(condition, matrix1, matrix2):
 def encrypted_round(w_len, div, res):
   vm, n_bits = div.vm, div.n_bits
 
-  div.value = vm.gate_mux(div > 0, 
+  div.value = vm.gate_mux(div >= 0,
       vm.gate_mux(res > w_len//2, 
         encrypted_add(vm, div.value, vm.gate_constant([[int(x)] for x in np.binary_repr(1, n_bits)]), n_bits, check_overflow=True),
-        div.value), 
+        div.value),
       vm.gate_mux(
         vm.gate_and(res <= w_len//2, res > 0),
         encrypted_add(vm, div.value, vm.gate_constant([[int(x)] for x in np.binary_repr(1, n_bits)]), n_bits, check_overflow=True),
