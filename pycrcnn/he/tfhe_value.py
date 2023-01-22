@@ -68,21 +68,37 @@ class TFHEValue:
         else:
           shift_amount = int(math.log2(abs(tfhe_value2)))
           return TFHEValue(right_shift(self.vm, twos_complement(self.vm, self.value, self.n_bits), shift_amount, self.n_bits), self.vm, self.n_bits)
+    
+    def __mod__(self, tfhe_value2):
+      if type(tfhe_value2) is not TFHEValue:
+        assert (tfhe_value2 != 0 and abs(tfhe_value2) & (abs(tfhe_value2)-1) == 0) # power of 2 and not 0
+        return TFHEValue(encrypted_po2_mod(self.vm, self.value, self.vm.gate_constant([[int(x)] for x in np.binary_repr(tfhe_value2, self.n_bits)]), self.n_bits), self.vm, self.n_bits)
+      return TFHEValue(encrypted_po2_mod(self.vm, self.value, tfhe_value2.value, self.n_bits), self.vm, self.n_bits)
 
     def __lt__(self, tfhe_value2):
-        return encrypted_lt(self.vm, self.value, tfhe_value2.value, self.n_bits)
+      if type(tfhe_value2) is not TFHEValue:
+        return encrypted_lt(self.vm, self.value, self.vm.gate_constant([[int(x)] for x in np.binary_repr(tfhe_value2, self.n_bits)]), self.n_bits)
+      return encrypted_lt(self.vm, self.value, tfhe_value2.value, self.n_bits)
 
     def __le__(self, tfhe_value2):
-        return self.vm.gate_not(encrypted_gt(self.vm, self.value, tfhe_value2.value, self.n_bits))
+      if type(tfhe_value2) is not TFHEValue:
+        return self.vm.gate_not(encrypted_gt(self.vm, self.value, self.vm.gate_constant([[int(x)] for x in np.binary_repr(tfhe_value2, self.n_bits)]), self.n_bits))
+      return self.vm.gate_not(encrypted_gt(self.vm, self.value, tfhe_value2.value, self.n_bits))
 
     def __gt__(self, tfhe_value2):
-        return encrypted_gt(self.vm, self.value, tfhe_value2.value, self.n_bits)
+      if type(tfhe_value2) is not TFHEValue:
+        return encrypted_gt(self.vm, self.value, self.vm.gate_constant([[int(x)] for x in np.binary_repr(tfhe_value2, self.n_bits)]), self.n_bits)
+      return encrypted_gt(self.vm, self.value, tfhe_value2.value, self.n_bits)
 
     def __ge__(self, tfhe_value2):
-        return self.vm.gate_not(encrypted_lt(self.vm, self.value, tfhe_value2.value, self.n_bits))
-    
+      if type(tfhe_value2) is not TFHEValue:
+        return self.vm.gate_not(encrypted_lt(self.vm, self.value, self.vm.gate_constant([[int(x)] for x in np.binary_repr(tfhe_value2, self.n_bits)]), self.n_bits))
+      return self.vm.gate_not(encrypted_lt(self.vm, self.value, tfhe_value2.value, self.n_bits))
+
     def __eq__(self, tfhe_value2):
-        return encrypted_eq(self.vm, self.value, tfhe_value2.value, self.n_bits)
+      if type(tfhe_value2) is not TFHEValue:
+        return encrypted_eq(self.vm, self.value, self.vm.gate_constant([[int(x)] for x in np.binary_repr(tfhe_value2, self.n_bits)]), self.n_bits)
+      return encrypted_eq(self.vm, self.value, tfhe_value2.value, self.n_bits)
     
     def copy(self):
-        return TFHEValue(self.value, self.vm, self.n_bits)
+      return TFHEValue(self.value, self.vm, self.n_bits)

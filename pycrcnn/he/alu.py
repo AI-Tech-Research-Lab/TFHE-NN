@@ -133,6 +133,26 @@ def encrypted_po2_div(vm: nufhe.api_high_level.VirtualMachine, op1: nufhe.LweSam
 
   return div_res
 
+def encrypted_po2_mod(vm: nufhe.api_high_level.VirtualMachine, op1: nufhe.LweSampleArray, op2: nufhe.LweSampleArray, n_bits: int) -> nufhe.LweSampleArray:
+  """
+  Homomorphic modulo between 2 ciphertexts.
+  *Assumption*: Divider must be a power-of-2.
+
+  It builds the power-of-2 modulo circuit using the AND gate.
+  
+  :param VirtualMachine vm: The virtual machine capable of executing gates on ciphertexts given by the nuFHE object.
+  :param LweSampleArray op1: The dividend.
+  :param LweSampleArray op2: The p-o-2 divisor.
+  :param int n_bits: The number of bits of the result.
+
+  :returns: The encrypted modulo result.
+  """
+
+  sub = encrypted_sub(vm, op2, vm.gate_constant([[int(x)] for x in np.binary_repr(1, n_bits)]), n_bits)
+  mod_res = vm.gate_and(op1, sub)
+
+  return mod_res
+
 def twos_complement(vm: nufhe.api_high_level.VirtualMachine, op: nufhe.LweSampleArray, n_bits: int):
   b = vm.empty_ciphertext((n_bits, 1))
   res = vm.empty_ciphertext((n_bits, 1))
@@ -228,4 +248,31 @@ def encrypted_mux_matrix(condition, matrix1, matrix2):
       return np.array(list(map(lambda x,y: encrypted_mux(condition,x,y), matrix1, matrix2)))
   except (TypeError, AttributeError):
       return np.array([encrypted_mux_matrix(condition, matrix1[i], matrix2[i]) for i in range(len(matrix1))])
+
+def encrypted_round(w_len, div, res):
+  vm, n_bits = div.vm, div.n_bits
+
+  div.value = vm.gate_mux(div > 0, 
+      vm.gate_mux(res > w_len//2, 
+        encrypted_add(vm, div.value, vm.gate_constant([[int(x)] for x in np.binary_repr(1, n_bits)]), n_bits, check_overflow=True),
+        div.value), 
+      vm.gate_mux(
+        vm.gate_and(res <= w_len//2, res > 0),
+        encrypted_add(vm, div.value, vm.gate_constant([[int(x)] for x in np.binary_repr(1, n_bits)]), n_bits, check_overflow=True),
+        div.value)
+    )
+  return div
+
+def encrypted_round_matrix(w_len, div, res):
+  try:
+    return np.array(list(map(lambda x,y: encrypted_round(w_len, x, y), div, res)))
+  except (TypeError, AttributeError):
+    return np.array([encrypted_round_matrix(w_len, div[i], res[i]) for i in range(len(div))])
+
+def encrypted_mean_matrix(array):
+  w_len = len(array)
+  div = np.sum(array, axis=0)/w_len
+  res = np.sum(array, axis=0)%w_len
+
+  return encrypted_round_matrix(w_len, div, res)
 
