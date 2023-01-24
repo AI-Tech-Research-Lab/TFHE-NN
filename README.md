@@ -11,6 +11,7 @@ All the code has been tested on a Linux machine, with Python 3.9; however, Pytho
   - `HE_ML/Exp2_DistributedTraining/`, with the two folders for the "TernaryMNIST" experiment and the "FashionMNIST" one;
   - `HE_ML/Exp3_CrossValidation/`.
 - `requirements.txt` contains the requirement needed to execute all the code.
+- `nufhe` contains our fork of the nufhe Python library for executing the TFHE gates. After installing `requirements.txt`, also install the content of this folder in your environment.
   
 ## Experiments
 ### Exp1
