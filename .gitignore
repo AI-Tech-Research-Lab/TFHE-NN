@@ -107,4 +107,4 @@ venv.bak/
 .idea/
 
 # folders
-/HE-ML/ModelAggregation/Fashion_MNIST/Models&Weights/
+/HE-ML/Exp2_DistributedTraining/FashionMNIST/Models&Weights/
