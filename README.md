@@ -7,7 +7,7 @@ All the code has been tested on a Linux machine, with Python 3.9; however, Pytho
 ## Organization
 - `pycrcnn`: source code for the TFHE-NNs definition and training;
 - `HE_ML`: folder with the experiments. There are three subfolders containing the scripts and datasets for the three experiments considered:
-  - `HE_ML/Exp1_EncryptedTraining/TernaryMNIST/`;
+  - `HE_ML/Exp1_EncryptedTraining/`;
   - `HE_ML/Exp2_DistributedTraining/`, with the two folders for the "TernaryMNIST" experiment and the "FashionMNIST" one;
   - `HE_ML/Exp3_CrossValidation/`.
 - `requirements.txt` contains the requirement needed to execute all the code.
