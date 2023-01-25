@@ -22,7 +22,7 @@ Nonetheless, you can use the `CheckResults.ipynb` notebook which compares the mo
 ### Exp 2
 In the Experiment 2 folder you will find the two subfolders for the two used datasets.
 `TernaryMNIST` is very similar to Exp 1, even though you will find two `TrainingModelX.ipynb` notebooks, one for each model, and the `Aggregation.ipynb` one, which outputs the aggregated encrypted model starting from Model1 and Model2. In the `CheckResults.ipynb` notebook you will see the numerical values presented in the paper.
-`FashionMNIST` is a bit different because this experiment has not been run on encrypted data (as specified in the paper). You will find the notebook `TrainingSingleModel.ipynb`, to check the accuracy of the model trained on the whole training set, and the `TrainingMultipleModels.ipynb` to see how the models are aggregated. `CheckResults.ipynb` presents the numerical results shown in the paper, along with additional plots and statistics.
+`FashionMNIST` is a bit different because this experiment has not been run on encrypted data (as specified in the paper). You will find the notebooks `TrainingSingleModel.ipynb` and `TrainingMultipleModels.ipynb`, used to train the model on the whole training set and to aggregate different models, respectively. `CheckResults.ipynb` presents the numerical results shown in the paper, along with additional plots and statistics.
 
 ### Exp 3
 In the Experiment 3 folder you will find the notebooks used to train the four models (i.e., `TrainingModelX.ipynb`), along with the `CrossValidation.ipynb` notebook which shows the actual encrypted cross-validation procedure able to process encrypted models. In `CheckResults.ipynb` you can find the numerical results presented in the paper.
